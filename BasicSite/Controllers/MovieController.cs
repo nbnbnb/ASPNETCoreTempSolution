@@ -11,6 +11,7 @@ using BasicSite.Models;
 
 namespace BasicSite.Controllers
 {
+
     public class MovieController : Controller
     {
         private readonly ApplicationDbContext _context;
