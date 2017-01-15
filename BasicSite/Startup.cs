@@ -8,6 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+using Microsoft.EntityFrameworkCore;
+using BasicSite.Data;
+
 namespace BasicSite
 {
     public class Startup
@@ -29,6 +32,14 @@ namespace BasicSite
         {
             // Add framework services.
             services.AddMvc();
+
+            // Add EF Core
+            // Microsoft.EntityFrameworkCore.SqlServer
+            // Microsoft.EntityFrameworkCore.Tools
+            // using Microsoft.EntityFrameworkCore;
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +66,9 @@ namespace BasicSite
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            // 初始化数据
+            Models.SeedData.Initialize(app.ApplicationServices);
         }
     }
 }
