@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using BasicSite.Models;
 
 namespace BasicSite.Controllers
 {
@@ -32,9 +33,15 @@ namespace BasicSite.Controllers
             return View();
         }
 
-        public IActionResult Temp()
+        public IActionResult Temp(bool approved = false)
         {
-            return View();
+            return View(new WebsiteContext
+            {
+                Approved = approved,
+                CopyrightYear = 2015,
+                Version = new Version(1, 3, 3, 7),
+                TagsToShow = 20
+            });
         }
     }
 }

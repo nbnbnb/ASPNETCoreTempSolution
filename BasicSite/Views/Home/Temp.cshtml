@@ -2,41 +2,24 @@
     ViewData["Title"] = "Temp";
 }
 
-@{
-    var inCSharp = true;
-    // 隐式输出 HTML 内容
-    // 如果没有 <p> 标签，Razor 会报错
-    <p>Now in HTML, was in C# @inCSharp</p>
-}
+<h3>Temp Page</h3>
 
-<ul>
-    @for (int i = 0; i < 3; i++)
-    {
-        var item = i + ",";
-        // 由于没有 HTML 标签包裹时，无法在块中输出内容
-        // 所以此处使用 <text> 进行显式包裹
-        // 此方法法适用于输出纯文本到页面上
-        <text>@item</text>
-    }
-</ul>
 
-<dl>
-    @for (int i = 0; i < 3; i++)
-    {
-        // @: 后面的内容都当作 HTML 进行输出
-        var item = i + "-item";
-        @:<dt>@item</dt>
-    }
-</dl>
+<p bold>Use this area to provide additional information.</p>
 
-<dl>
-    @for (int i = 0; i < 3; i++)
-    {
-        // 使用 Html.Raw
-        // 由于  Html.Raw 返回的是 IHtmlContent
-        // 所以需要在签名显示添加 @，让 Razor 进行输出（不需要末尾的 ;）
-        var item = i + "-item";
-        @Html.Raw("<dt>"+item+"</dt>")
-    }
-</dl>
+<bold> Is this bold?</bold>
 
+
+<div>
+    <h3>Information about our website (outdated):</h3>
+    <Website-InforMation info=Model />
+    <div condition="Model.Approved">
+        <p>
+            This website has <strong surround="em"> @Model.Approved </strong> been approved yet.
+            Visit www.contoso.com for more information.
+        </p>
+    </div>
+</div>
+
+
+<p www>Visit us at http://docs.asp.net or at www.microsoft.com</p>
