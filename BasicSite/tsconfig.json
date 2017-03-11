@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
+    "emitBOM": true,
+    "module": "commonjs",
     "noImplicitAny": true,
     "noEmitOnError": true,
     "sourceMap": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "target": "es5",
-    "types": [ "es6-shim", "knockout", "systemjs", "requirejs" ] // Ö¸¶¨ typing ÎÄ¼ş£¬Í¨¹ı npm install --save @types/knockout ½øĞĞ°²×°
+    "types": [ "es6-shim", "knockout", "systemjs", "requirejs" ] // æŒ‡å®š typing æ–‡ä»¶ï¼Œé€šè¿‡ npm install --save @types/knockout è¿›è¡Œå®‰è£…
   },
   "include": [ "scripts/**/*" ],
   "compileOnSave": true
@@ -16,41 +18,42 @@
 /*
   https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
   https://www.typescriptlang.org/docs/handbook/compiler-options.html
+  http://json.schemastore.org/tsconfig
 
   files
-    Ö¸¶¨ÎÄ¼şµÄ¾ø¶Ô»òÏà¶ÔÂ·¾¶
+    æŒ‡å®šæ–‡ä»¶çš„ç»å¯¹æˆ–ç›¸å¯¹è·¯å¾„
   include + exclude
-    Ê¹ÓÃÍ¨Åä·ûÄ£Ê½À´Ö¸¶¨ÎÄ¼ş
-    *£º0 ¸ö»ò¶à¸ö×Ö·û£¨²»°üÀ¨Ä¿Â¼·Ö¸î·û£©
-    ?£ºÆ¥ÅäÒ»¸ö×Ö·û£¨²»°üÀ¨Ä¿Â¼·Ö¸î·û£©
-    ** /£ºÆ¥Åä×ÓÄ¿Â¼
+    ä½¿ç”¨é€šé…ç¬¦æ¨¡å¼æ¥æŒ‡å®šæ–‡ä»¶
+    *ï¼š0 ä¸ªæˆ–å¤šä¸ªå­—ç¬¦ï¼ˆä¸åŒ…æ‹¬ç›®å½•åˆ†å‰²ç¬¦ï¼‰
+    ?ï¼šåŒ¹é…ä¸€ä¸ªå­—ç¬¦ï¼ˆä¸åŒ…æ‹¬ç›®å½•åˆ†å‰²ç¬¦ï¼‰
+    ** /ï¼šåŒ¹é…å­ç›®å½•
 
-  * ºÍ .* Ä¬ÈÏÖ»Æ¥Åä .ts .tsx .d.ts ÎÄ¼ş£¬Èç¹û allowJS ÉèÖÃÎª true£¬Ôò»¹»áÆ¥Åä  .js ºÍ .jsx
+  * å’Œ .* é»˜è®¤åªåŒ¹é… .ts .tsx .d.ts æ–‡ä»¶ï¼Œå¦‚æœ allowJS è®¾ç½®ä¸º trueï¼Œåˆ™è¿˜ä¼šåŒ¹é…  .js å’Œ .jsx
 
-  Èç¹û files ºÍ include ¶¼Î´Ö¸¶¨£¬±àÒëÆ÷½«»á°üº¬ËùÓĞµÄ TypeScript ÎÄ¼ş£¨.ts .d.ts .tsx£©
+  å¦‚æœ files å’Œ include éƒ½æœªæŒ‡å®šï¼Œç¼–è¯‘å™¨å°†ä¼šåŒ…å«æ‰€æœ‰çš„ TypeScript æ–‡ä»¶ï¼ˆ.ts .d.ts .tsxï¼‰
   
-  Èç¹û files ºÍ include Í¬Ê±Ö¸¶¨£¬Ôò»áÊÇÒ»¸öºÏ¼¯
+  å¦‚æœ files å’Œ include åŒæ—¶æŒ‡å®šï¼Œåˆ™ä¼šæ˜¯ä¸€ä¸ªåˆé›†
 
-  µ± exclude Î´ÉèÖÃÊ±£¬Ä¬ÈÏÅÅ³ı node_modules, bower_components, jspm_packages ºÍ <outDir>
+  å½“ exclude æœªè®¾ç½®æ—¶ï¼Œé»˜è®¤æ’é™¤ node_modules, bower_components, jspm_packages å’Œ <outDir>
 
-  files µÄÓÅÏÈ¼¶×î¸ß
+  files çš„ä¼˜å…ˆçº§æœ€é«˜
 
-  ÈÎºÎÍ¨¹ı files ºÍ include ÒıÓÃµÄÎÄ¼ş£¬Ò²°üº¬ÔÚÄÚ
+  ä»»ä½•é€šè¿‡ files å’Œ include å¼•ç”¨çš„æ–‡ä»¶ï¼Œä¹ŸåŒ…å«åœ¨å†…
 
-  Èç¹ûÉèÖÃ tsconfig.json Îª¿Õ£¬ÔòÈ«²¿Ê¹ÓÃÄ¬ÈÏÅäÖÃ
+  å¦‚æœè®¾ç½® tsconfig.json ä¸ºç©ºï¼Œåˆ™å…¨éƒ¨ä½¿ç”¨é»˜è®¤é…ç½®
 
-  tsc ÃüÁîĞĞ²ÎÊı½«»á¸²¸Ç tsconfig.json
+  tsc å‘½ä»¤è¡Œå‚æ•°å°†ä¼šè¦†ç›– tsconfig.json
 
   @types typeRoots types
-  Ä¬ÈÏÇé¿öÏÂ£¬²»½øĞĞÖ¸¶¨£¬Ôò node_modules£¨Ò»Ö±µ½¸ùÄ¿Â¼£©ÖĞµÄËùÓĞ°ü¶¼¶Ô±àÒëÆ÷¿É¼û
+  é»˜è®¤æƒ…å†µä¸‹ï¼Œä¸è¿›è¡ŒæŒ‡å®šï¼Œåˆ™ node_modulesï¼ˆä¸€ç›´åˆ°æ ¹ç›®å½•ï¼‰ä¸­çš„æ‰€æœ‰åŒ…éƒ½å¯¹ç¼–è¯‘å™¨å¯è§
     ./node_modules/@types/, ../node_modules/@types/, ../../node_modules/@types/
-  ¿ÉÒÔÖ¸¶¨ typeRoots£¬Ôò´ËÄ¿Â¼ÖĞµÄ°ü²Å¶Ô±àÒëÆ÷¿É¼û
-  Ò²¿ÉÒÔÖ¸¶¨ types£¬ÀıÈç "types" : ["node", "lodash", "express"]
-    ÔòÖ»ÓĞ ./node_modules/@types/node, ./node_modules/@types/lodash ºÍ ./node_modules/@types/express °üÀ¨ÔÚÄÚ
+  å¯ä»¥æŒ‡å®š typeRootsï¼Œåˆ™æ­¤ç›®å½•ä¸­çš„åŒ…æ‰å¯¹ç¼–è¯‘å™¨å¯è§
+  ä¹Ÿå¯ä»¥æŒ‡å®š typesï¼Œä¾‹å¦‚ "types" : ["node", "lodash", "express"]
+    åˆ™åªæœ‰ ./node_modules/@types/node, ./node_modules/@types/lodash å’Œ ./node_modules/@types/express åŒ…æ‹¬åœ¨å†…
 
-  ¿ÉÒÔÊ¹ÓÃ extends ½øĞĞÅäÖÃ¼Ì³Ğ
+  å¯ä»¥ä½¿ç”¨ extends è¿›è¡Œé…ç½®ç»§æ‰¿
 
   "outDir": "./Scripts/App"
-  ÉèÖÃÎÄ¼şµÄÉú³ÉÂ·¾¶
+  è®¾ç½®æ–‡ä»¶çš„ç”Ÿæˆè·¯å¾„
   */
 

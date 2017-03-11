@@ -7,12 +7,7 @@
   <PropertyGroup>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="wwwroot\scripts\config\require-config.js" />
-    <Content Include="wwwroot\scripts\config\require-config.js.map" />
-    <Content Include="wwwroot\scripts\config\require-config.ts" />
-  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
@@ -29,9 +24,5 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Angular\" />
-  </ItemGroup>
-  <ProjectExtensions><VisualStudio><UserProperties package_1json__JSONSchema="    &quot;@types/es6-shim&quot;: &quot;^0.31.32&quot;," /></VisualStudio></ProjectExtensions>
 
 </Project>
