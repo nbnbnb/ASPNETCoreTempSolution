@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace BasicSite.Helpers
+namespace BasicSite.Helpers.TagHelpers
 {
     [HtmlTargetElement("p", Attributes = "www")]
     public class AutoLinkerWwwTagHelper : TagHelper
