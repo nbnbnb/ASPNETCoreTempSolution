@@ -8,8 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using Microsoft.EntityFrameworkCore;
-using BasicSite.Data;
+using Microsoft.EntityFrameworkCore;  // Extensions
 
 namespace BasicSite
 {
@@ -19,7 +18,7 @@ namespace BasicSite
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -33,13 +32,14 @@ namespace BasicSite
             // Add framework services.
             services.AddMvc();
 
-            // Add EF Core
+            // Add EF Core Libs
             // Microsoft.EntityFrameworkCore.SqlServer
             // Microsoft.EntityFrameworkCore.Tools
             // using Microsoft.EntityFrameworkCore;
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            // 配置连接字符串在 appsettings.json 中
+            services.AddDbContext<Data.ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,9 +66,6 @@ namespace BasicSite
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            // 初始化数据
-            Models.SeedData.Initialize(app.ApplicationServices);
         }
     }
 }
