@@ -38,6 +38,15 @@ gulp.task('clean_scripts', function (cb) {  // one
     del(['wwwroot/scripts/**/*']).then(paths => { cb(); });
 });
 
+gulp.task('clean_npm_components', function (cb) {  // one
+    del(['wwwroot/npm_components/**/*']).then(paths => { cb(); });
+});
+
+// bower_components 在 .bowerrc 里面配置
+gulp.task('clean_bower_components', function (cb) {  // one
+    del(['wwwroot/bower_components/**/*']).then(paths => { cb(); });
+});
+
 // 清除 www/scripts 目录下的文件
 // 然后将 paths.scripts 拷贝到 www/scripts
 gulp.task('scripts', ['clean_scripts'], function (cb) {  // two
