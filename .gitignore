@@ -261,5 +261,6 @@ __pycache__/
 *.pyc
 
 # 忽略自动脚本文件
-**/wwwroot/bower_components
-**/wwwroot/npm_components
+wwwroot/bower_components
+wwwroot/npm_components
+wwwroot/scripts
