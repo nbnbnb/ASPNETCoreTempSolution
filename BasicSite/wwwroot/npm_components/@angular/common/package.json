@@ -6,13 +6,13 @@
     ]
   ],
   "_from": "@angular/common@>=2.4.0-0 <3.0.0-0",
-  "_id": "@angular/common@2.4.9",
+  "_id": "@angular/common@2.4.10",
   "_inCache": true,
   "_location": "/@angular/common",
   "_nodeVersion": "6.9.5",
   "_npmOperationalInternal": {
-    "host": "packages-18-east.internal.npmjs.com",
-    "tmp": "tmp/common-2.4.9.tgz_1488439231988_0.37394612352363765"
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/common-2.4.10.tgz_1489718082020_0.8636821166146547"
   },
   "_npmUser": {
     "email": "angular-core+npm@google.com",
@@ -31,8 +31,8 @@
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "http://registry.npmjs.org/@angular/common/-/common-2.4.9.tgz",
-  "_shasum": "3094f973e18330526256dcd13fcf27609b7abc08",
+  "_resolved": "https://registry.npmjs.org/@angular/common/-/common-2.4.10.tgz",
+  "_shasum": "a3a682d2228fa30ec23dd0eb57c8e887fba26997",
   "_shrinkwrap": null,
   "_spec": "@angular/common@^2.4.0",
   "_where": "D:\\Repos\\ASPNETCoreTempSolution\\BasicSite",
@@ -47,8 +47,8 @@
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "shasum": "3094f973e18330526256dcd13fcf27609b7abc08",
-    "tarball": "https://registry.npmjs.org/@angular/common/-/common-2.4.9.tgz"
+    "shasum": "a3a682d2228fa30ec23dd0eb57c8e887fba26997",
+    "tarball": "https://registry.npmjs.org/@angular/common/-/common-2.4.10.tgz"
   },
   "homepage": "https://github.com/angular/angular#readme",
   "installable": true,
@@ -64,7 +64,7 @@
   "name": "@angular/common",
   "optionalDependencies": {},
   "peerDependencies": {
-    "@angular/core": "2.4.9"
+    "@angular/core": "2.4.10"
   },
   "repository": {
     "type": "git",
@@ -72,5 +72,5 @@
   },
   "scripts": {},
   "typings": "index.d.ts",
-  "version": "2.4.9"
+  "version": "2.4.10"
 }

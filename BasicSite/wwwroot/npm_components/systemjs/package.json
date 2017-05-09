@@ -6,19 +6,19 @@
     ]
   ],
   "_from": "systemjs@>=0.20.9-0 <0.21.0-0",
-  "_id": "systemjs@0.20.9",
+  "_id": "systemjs@0.20.12",
   "_inCache": true,
   "_location": "/systemjs",
-  "_nodeVersion": "7.4.0",
+  "_nodeVersion": "8.0.0-nightly2017040353828e8bff",
   "_npmOperationalInternal": {
     "host": "packages-18-east.internal.npmjs.com",
-    "tmp": "tmp/systemjs-0.20.9.tgz_1487305651388_0.20260762376710773"
+    "tmp": "tmp/systemjs-0.20.12.tgz_1491482923289_0.9770134123973548"
   },
   "_npmUser": {
     "email": "guybedford@gmail.com",
     "name": "guybedford"
   },
-  "_npmVersion": "4.0.5",
+  "_npmVersion": "4.2.0",
   "_phantomChildren": {},
   "_requested": {
     "name": "systemjs",
@@ -31,8 +31,8 @@
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "http://registry.npmjs.org/systemjs/-/systemjs-0.20.9.tgz",
-  "_shasum": "80c00a89511a2064c3f57ce6e8f27784620477ec",
+  "_resolved": "https://registry.npmjs.org/systemjs/-/systemjs-0.20.12.tgz",
+  "_shasum": "135cc471280448453347829ebb9639a09a67f101",
   "_shrinkwrap": null,
   "_spec": "systemjs@^0.20.9",
   "_where": "D:\\Repos\\ASPNETCoreTempSolution\\BasicSite",
@@ -49,7 +49,7 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-es2015-modules-systemjs": "^6.19.0",
     "bluebird": "^3.4.6",
-    "es-module-loader": "^2.1.0",
+    "es-module-loader": "^2.1.5",
     "mocha": "^3.1.2",
     "plugin-typescript": "^5.2.7",
     "rollup": "^0.41.1",
@@ -63,13 +63,13 @@
   },
   "directories": {},
   "dist": {
-    "shasum": "80c00a89511a2064c3f57ce6e8f27784620477ec",
-    "tarball": "https://registry.npmjs.org/systemjs/-/systemjs-0.20.9.tgz"
+    "shasum": "135cc471280448453347829ebb9639a09a67f101",
+    "tarball": "https://registry.npmjs.org/systemjs/-/systemjs-0.20.12.tgz"
   },
   "files": [
     "dist"
   ],
-  "gitHead": "72e0011564c983ef1dbc433b262585d0ab9b9f9e",
+  "gitHead": "c484f143c552a5c5aba875b2089c21a733d50ca6",
   "homepage": "https://github.com/systemjs/systemjs#readme",
   "installable": true,
   "license": "MIT",
@@ -104,5 +104,5 @@
     "test:traceur": "mocha test/test-traceur.js -u tdd --reporter dot",
     "test:typescript": "mocha test/test-typescript.js -u tdd --reporter dot"
   },
-  "version": "0.20.9"
+  "version": "0.20.12"
 }

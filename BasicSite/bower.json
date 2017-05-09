@@ -6,7 +6,10 @@
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "knockout": "v3.4.1",
+    "knockout": "v3.4.2",
     "requirejs": "2.3.2"
+  },
+  "resolutions": {
+    "knockout": "v3.4.2"
   }
 }

@@ -31,7 +31,7 @@
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "http://registry.npmjs.org/angular-in-memory-web-api/-/angular-in-memory-web-api-0.2.5.tgz",
+  "_resolved": "https://registry.npmjs.org/angular-in-memory-web-api/-/angular-in-memory-web-api-0.2.5.tgz",
   "_shasum": "bd599ec6f5b86fa5173dd7bb5710f393e804dd05",
   "_shrinkwrap": null,
   "_spec": "angular-in-memory-web-api@^0.2.4",

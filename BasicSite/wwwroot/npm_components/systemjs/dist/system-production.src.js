@@ -1,5 +1,5 @@
 /*
- * SystemJS v0.20.9 Production
+ * SystemJS v0.20.12 Production
  */
 (function () {
 'use strict';
@@ -786,8 +786,13 @@ function traceLoad (loader, load, link) {
   loader.loads[load.key] = {
     key: load.key,
     deps: link.dependencies,
+    dynamicDeps: [],
     depMap: link.depMap || {}
   };
+}
+
+function traceDynamicLoad (loader, parentKey, key) {
+  loader.loads[parentKey].dynamicDeps.push(key);
 }
 
 /*
@@ -801,35 +806,40 @@ function registerDeclarative (loader, load, link, declare) {
   var moduleObj = link.moduleObj;
   var importerSetters = load.importerSetters;
 
-  var locked = false;
+  var definedExports = false;
 
   // closure especially not based on link to allow link record disposal
   var declared = declare.call(envGlobal, function (name, value) {
-    // export setter propogation with locking to avoid cycles
-    if (locked)
-      return;
-
     if (typeof name === 'object') {
-      for (var p in name)
-        if (p !== '__useDefault')
-          moduleObj[p] = name[p];
+      var changed = false;
+      for (var p in name) {
+        value = name[p];
+        if (p !== '__useDefault' && (!(p in moduleObj) || moduleObj[p] !== value)) {
+          changed = true;
+          moduleObj[p] = value;
+        }
+      }
+      if (changed === false)
+        return value;
     }
     else {
+      if ((definedExports || name in moduleObj) && moduleObj[name] === value)
+        return value;
       moduleObj[name] = value;
     }
 
-    locked = true;
     for (var i = 0; i < importerSetters.length; i++)
       importerSetters[i](moduleObj);
-    locked = false;
 
     return value;
   }, new ContextualLoader(loader, load.key));
 
   link.setters = declared.setters;
   link.execute = declared.execute;
-  if (declared.exports)
+  if (declared.exports) {
     link.moduleObj = moduleObj = declared.exports;
+    definedExports = true;
+  }
 }
 
 function instantiateDeps (loader, load, link, registry, state, seen) {
@@ -876,8 +886,10 @@ function instantiateDeps (loader, load, link, registry, state, seen) {
       if (!depLink || depLink.linked)
         continue;
 
-      if (seen.indexOf(depLoad) !== -1)
+      if (seen.indexOf(depLoad) !== -1) {
+        deepDepsInstantiatePromises.push(depLink.depsInstantiatePromise);
         continue;
+      }
       seen.push(depLoad);
 
       deepDepsInstantiatePromises.push(instantiateDeps(loader, depLoad, depLoad.linkRecord, registry, state, seen));
@@ -982,18 +994,17 @@ function ContextualLoader (loader, key) {
   this.loader = loader;
   this.key = this.id = key;
 }
-ContextualLoader.prototype.constructor = function () {
+/*ContextualLoader.prototype.constructor = function () {
   throw new TypeError('Cannot subclass the contextual loader only Reflect.Loader.');
-};
+};*/
 ContextualLoader.prototype.import = function (key) {
+  if (this.loader.trace)
+    traceDynamicLoad(this.loader, this.key, key);
   return this.loader.import(key, this.key);
 };
-ContextualLoader.prototype.resolve = function (key) {
+/*ContextualLoader.prototype.resolve = function (key) {
   return this.loader.resolve(key, this.key);
-};
-ContextualLoader.prototype.load = function (key) {
-  return this.loader.load(key, this.key);
-};
+};*/
 
 // this is the execution function bound to the Module namespace record
 function ensureEvaluate (loader, load, link, registry, state, seen) {
@@ -1109,13 +1120,10 @@ function doEvaluate (loader, load, link, registry, state, seen) {
 
       // __esModule flag extension support via lifting
       if (moduleDefault && moduleDefault.__esModule) {
-        if (moduleObj.__useDefault)
-          delete moduleObj.__useDefault;
-        for (var p in moduleDefault) {
-          if (Object.hasOwnProperty.call(moduleDefault, p))
+        for (var p in moduleObj.default) {
+          if (Object.hasOwnProperty.call(moduleObj.default, p) && p !== 'default')
             moduleObj[p] = moduleDefault[p];
         }
-        moduleObj.__esModule = true;
       }
     }
   }
@@ -1186,6 +1194,44 @@ var PLAIN_RESOLVE_SYNC = createSymbol('plain-resolve-sync');
 var isWorker = typeof window === 'undefined' && typeof self !== 'undefined' && typeof importScripts !== 'undefined';
 
 
+
+function checkInstantiateWasm (loader, wasmBuffer, processAnonRegister) {
+  var bytes = new Uint8Array(wasmBuffer);
+
+  // detect by leading bytes
+  // Can be (new Uint32Array(fetched))[0] === 0x6D736100 when working in Node
+  if (bytes[0] === 0 && bytes[1] === 97 && bytes[2] === 115) {
+    return WebAssembly.compile(wasmBuffer).then(function (m) {
+      var deps = [];
+      var setters = [];
+      var importObj = {};
+
+      // we can only set imports if supported (eg Safari doesnt support)
+      if (WebAssembly.Module.imports)
+        WebAssembly.Module.imports(m).forEach(function (i) {
+          var key = i.module;
+          setters.push(function (m) {
+            importObj[key] = m;
+          });
+          if (deps.indexOf(key) === -1)
+            deps.push(key);
+        });
+      loader.register(deps, function (_export) {
+        return {
+          setters: setters,
+          execute: function () {
+            _export(new WebAssembly.Instance(m, importObj).exports);
+          }
+        };
+      });
+      processAnonRegister();
+
+      return true;
+    });
+  }
+
+  return Promise.resolve(false);
+}
 
 
 
@@ -1403,10 +1449,15 @@ systemJSPrototype[SystemJSProductionLoader$1.resolve = RegisterLoader$1.resolve]
     return loader[PLAIN_RESOLVE](key, parentKey);
   })
   .then(function (resolved) {
+    resolved = resolved || key;
+    // if in the registry then we are done
+    if (loader.registry.has(resolved))
+      return resolved;
+
     // then apply paths
     // baseURL is fallback
     var config = loader[CONFIG];
-    return applyPaths(config.baseURL, config.paths, resolved || key);
+    return applyPaths(config.baseURL, config.paths, resolved);
   });
 };
 
@@ -1422,11 +1473,14 @@ systemJSPrototype.resolveSync = function (key, parentKey) {
     return resolved;
 
   // plain resolution
-  resolved = this[PLAIN_RESOLVE_SYNC](key, parentKey);
+  resolved = this[PLAIN_RESOLVE_SYNC](key, parentKey) || key;
+
+  if (this.registry.has(resolved))
+    return resolved;
 
   // then apply paths
   var config = this[CONFIG];
-  return applyPaths(config.baseURL, config.paths, resolved || key);
+  return applyPaths(config.baseURL, config.paths, resolved);
 };
 
 systemJSPrototype.import = function () {
@@ -1515,7 +1569,7 @@ systemJSPrototype.config = function (cfg) {
 };
 
 // getConfig configuration cloning
-/* systemJSPrototype.getConfig = function (name) {
+systemJSPrototype.getConfig = function (name) {
   var config = this[CONFIG];
 
   var map = {};
@@ -1537,18 +1591,18 @@ systemJSPrototype.config = function (cfg) {
   for (var p in config.bundles) {
     if (!Object.hasOwnProperty.call(config.bundles, p))
       continue;
-    (bundles[config.bundles[p]] = bundles[config.bundles[p]] || []).push(p);
+    bundles[p] = [].concat(config.bundles[p]);
   }
 
   return {
     baseURL: config.baseURL,
     paths: extend({}, config.paths),
     depCache: depCache,
-    bundles: cloneArrays(config.bundles),
+    bundles: bundles,
     map: map,
     wasm: config.wasm
   };
-}; */
+};
 
 // ensure System.register and System.registerDynamic decanonicalize
 systemJSPrototype.register = function (key, deps, declare) {
@@ -1588,48 +1642,6 @@ function plainResolve (key, parentKey) {
   }
 }
 
-function instantiateIfWasm (loader, url) {
-  return fetch(url)
-  .then(function(res) {
-    if (res.ok)
-      return res.arrayBuffer();
-    else
-      throw new Error('Fetch error: ' + res.status + ' ' + res.statusText);
-  })
-  .then(function (fetched) {
-    var bytes = new Uint8Array(fetched);
-    // detect by leading bytes
-    if (bytes[0] === 0 && bytes[1] === 97 && bytes[2] === 115) {
-      return WebAssembly.compile(bytes).then(function (m) {
-        var deps = [];
-        var setters = [];
-        var importObj = {};
-        WebAssembly.Module.imports(m).forEach(function (i) {
-          var key = i.module;
-          setters.push(function (m) {
-            importObj[key] = m;
-          });
-          if (deps.indexOf(key) === -1)
-            deps.push(key);
-        });
-        loader.register(deps, function (_export) {
-          return {
-            setters: setters,
-            execute: function () {
-              _export(new WebAssembly.Instance(m, importObj).exports);
-            }
-          };
-        });
-      });
-    }
-
-    // not wasm -> convert buffer into utf-8 string to execute as a module
-    // TextDecoder compatibility matches WASM currently. Need to keep checking this.
-    // The TextDecoder interface is documented at http://encoding.spec.whatwg.org/#interface-textdecoder
-    return new TextDecoder('utf-8').decode(bytes);
-  });
-}
-
 function doScriptLoad (url, processAnonRegister) {
   return new Promise(function (resolve, reject) {
     return scriptLoad(url, 'anonymous', undefined, function () {
@@ -1667,20 +1679,34 @@ function coreInstantiate (key, processAnonRegister) {
       this.resolve(depCache[i], key).then(preloadFn);
   }
 
-  if (wasm)
-    return instantiateIfWasm(this, key)
-    .then(function (sourceOrModule) {
-      if (typeof sourceOrModule === 'string') {
-        (0, eval)(sourceOrModule + '\n//# sourceURL=' + key);
-      }
-
-      processAnonRegister();
+  if (wasm) {
+    var loader = this;
+    return fetch(key)
+    .then(function(res) {
+      if (res.ok)
+        return res.arrayBuffer();
+      else
+        throw new Error('Fetch error: ' + res.status + ' ' + res.statusText);
+    })
+    .then(function (fetched) {
+      return checkInstantiateWasm(loader, fetched, processAnonRegister)
+      .then(function (wasmInstantiated) {
+        if (wasmInstantiated)
+          return;
+        // not wasm -> convert buffer into utf-8 string to execute as a module
+        // TextDecoder compatibility matches WASM currently. Need to keep checking this.
+        // The TextDecoder interface is documented at http://encoding.spec.whatwg.org/#interface-textdecoder
+        var source = new TextDecoder('utf-8').decode(new Uint8Array(fetched));
+        (0, eval)(source + '\n//# sourceURL=' + key);
+        processAnonRegister();
+      });
     });
+  }
 
   return doScriptLoad(key, processAnonRegister);
 }
 
-SystemJSProductionLoader$1.prototype.version = "0.20.9 Production";
+SystemJSProductionLoader$1.prototype.version = "0.20.12 Production";
 
 var System = new SystemJSProductionLoader$1();
 
