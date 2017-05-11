@@ -8,9 +8,12 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "target": "es5",
-    "types": [ "es6-shim", "knockout", "systemjs", "requirejs" ] // 指定 typing 文件，通过 npm install --save @types/knockout 进行安装
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [ "knockout", "systemjs", "requirejs", "core-js" ] // 指定 typing 文件，通过 npm install --save @types/knockout 进行安装
   },
-  "include": [ "scripts/**/*" ],
+  "include": [ "Scripts/**/*" ],
   "compileOnSave": true
 }
 
@@ -55,5 +58,16 @@
 
   "outDir": "./Scripts/App"
   设置文件的生成路径
+
+  使用 typeRoots 指定 types 目录
+  "typeRoots": [
+      "node_modules/@types"
+    ]
+
+  切换到 Angular 4.1.1 遇到的版本问题
+  https://hassantariqblog.wordpress.com/2017/03/12/angular2-resolve-typescript-ts2304-compilation-errors-in-visual-studio/
+  方式1 使用 ES2015(ES6)
+  方式2 使用 ES5+"@types/core-js": "0.9.36"  -- 一定不能升级到最新版本，不再需要 es6-shim
+
   */
 
