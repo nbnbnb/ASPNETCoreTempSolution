@@ -30,13 +30,9 @@ namespace BasicSite.Controllers
         /// <returns></returns>
         public IActionResult I18N()
         {
-            ViewData["Message"] = _localizer["<b>Hello</b><i> {0}</i>", "zhangjin"];
+            ViewData["Greet"] = _localizer["Greet"];
             return View();
         }
     }
 
-    public class SharedResource
-    {
-
-    }
 }
