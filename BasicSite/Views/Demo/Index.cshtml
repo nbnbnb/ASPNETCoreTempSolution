@@ -1,5 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Demos";
+    ViewData["Title"] = "Demos Index Page";
 }
 
-<h3>Demo Index Page</h3>
+<h3>Demos Index Page</h3>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            @Html.ActionLink("Globalization and localization", "I18N", "Demo", null, new { @class = "btn btn-primary", target = "_blank", role = "button" })
+        </div>
+        <div class="col-md-3">.col-md-4</div>
+        <div class="col-md-3">.col-md-4</div>
+        <div class="col-md-3">.col-md-4</div>
+    </div>
+</div>

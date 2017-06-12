@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Microsoft.EntityFrameworkCore;  // Extensions
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace BasicSite
 {
@@ -29,8 +32,13 @@ namespace BasicSite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
             // Add framework services.
-            services.AddMvc();
+            services
+                .AddMvc()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)  // 只有添加了这个服务后，在能在 Controller 中注入 IHtmlLocalizer<T>
+                .AddDataAnnotationsLocalization();
 
             // Add EF Core Libs
             // Microsoft.EntityFrameworkCore.SqlServer
@@ -57,6 +65,34 @@ namespace BasicSite
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+
+            var supportedCultures = new[]
+                {
+                    new CultureInfo("zh-CN"),
+                    new CultureInfo("zh-TW"),
+                    new CultureInfo("zh"),
+                    new CultureInfo("en-US"),
+                    new CultureInfo("en-AU"),
+                    new CultureInfo("en-GB"),
+                    new CultureInfo("en"),
+                    new CultureInfo("es-ES"),
+                    new CultureInfo("es-MX"),
+                    new CultureInfo("es"),
+                    new CultureInfo("fr-FR"),
+                    new CultureInfo("fr"),
+                };
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("zh-CN"),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = supportedCultures,
+                // UI strings that we have localized.
+                SupportedUICultures = supportedCultures
+            });
+
+            app.UseStaticFiles();
 
             app.UseStaticFiles();
 
