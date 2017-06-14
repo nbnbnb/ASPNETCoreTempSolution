@@ -7,16 +7,19 @@ using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Mvc.Localization;
 using System.Reflection;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace BasicSite.Controllers
 {
     public class DemoController : Controller
     {
         private readonly IHtmlLocalizer<DemoController> _localizer;
-
-        public DemoController(IHtmlLocalizer<DemoController> localizer)
+        private readonly ILogger _logger;
+        public DemoController(IHtmlLocalizer<DemoController> localizer,
+            ILogger<DemoController> logger)
         {
             _localizer = localizer;
+            _logger = logger;
         }
 
         public IActionResult Index()
