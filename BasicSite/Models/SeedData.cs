@@ -17,6 +17,10 @@ namespace BasicSite.Models
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
+                // 如果数据库不存在，则创建数据库及表结构
+                // 否则跳过
+                context.Database.EnsureCreated();
+
                 // Look for any movies.
                 if (context.Movies.Any())
                 {

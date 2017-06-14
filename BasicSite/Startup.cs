@@ -66,6 +66,8 @@ namespace BasicSite
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            // 初始化 DB 数据
+            Models.SeedData.Initialize(app.ApplicationServices);
 
             var supportedCultures = new[]
                 {
