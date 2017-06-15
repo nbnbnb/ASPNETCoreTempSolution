@@ -12,11 +12,15 @@ using Microsoft.EntityFrameworkCore;  // Extensions
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using System.Reflection;
+using Microsoft.Extensions.FileProviders;
 
 namespace BasicSite
 {
     public class Startup
     {
+        private IHostingEnvironment _hostingEnvironment;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -25,6 +29,8 @@ namespace BasicSite
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            _hostingEnvironment = env;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -32,6 +38,7 @@ namespace BasicSite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             // Add framework services.
@@ -39,6 +46,21 @@ namespace BasicSite
                 .AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)  // 只有添加了这个服务后，在能在 Controller 中注入 IHtmlLocalizer<T>
                 .AddDataAnnotationsLocalization();
+
+            #region File Providers
+
+            var physicalProvider = _hostingEnvironment.ContentRootFileProvider;
+            var embeddedProvider = new EmbeddedFileProvider(Assembly.GetEntryAssembly());
+            var compositeProvider = new CompositeFileProvider(physicalProvider, embeddedProvider);
+
+            // choose one provider to use for the app and register it
+            //services.AddSingleton<IFileProvider>(physicalProvider);
+            //services.AddSingleton<IFileProvider>(embeddedProvider);
+            services.AddSingleton<IFileProvider>(compositeProvider);
+
+            #endregion
+
+            #region EF
 
             // Add EF Core Libs
             // Microsoft.EntityFrameworkCore.SqlServer
@@ -48,6 +70,8 @@ namespace BasicSite
             // 配置连接字符串在 appsettings.json 中
             services.AddDbContext<Data.ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -104,6 +128,7 @@ namespace BasicSite
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

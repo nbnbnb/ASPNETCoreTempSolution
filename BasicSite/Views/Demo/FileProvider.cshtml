@@ -1,0 +1,24 @@
+﻿@using Microsoft.Extensions.FileProviders
+@model  IDirectoryContents  
+
+@{
+    ViewData["Title"] = "File Provider DI";
+}
+
+<h3>File Provider DI</h3>
+
+<h2>Folder Contents</h2>
+
+<ul>
+    @foreach (IFileInfo item in Model)
+    {
+        if (item.IsDirectory)
+        {
+            <li><strong>@item.Name</strong></li>
+        }
+        else
+        {
+            <li>@item.Name - @item.Length bytes</li>
+        }
+    }
+</ul>
