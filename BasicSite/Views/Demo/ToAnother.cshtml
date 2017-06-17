@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "ToAnother";
+}
+
+<h3>Temp</h3>
+
+<pre>
+读取从发起跳转的视图 Action 中设置的 TempData
+如果刷新页面，则无法读取到值，因为这个值只会被读取一次
+</pre>
+
+<p>
+    @TempData["a"]
+</p>
+
+<p>
+    @TempData["now"]
+</p>
+
+<p>
+    @Html.ActionLink("Back to MyTempData", "MyTempData")
+</p>

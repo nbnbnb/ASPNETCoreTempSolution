@@ -47,6 +47,18 @@ namespace BasicSite
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)  // 只有添加了这个服务后，在能在 Controller 中注入 IHtmlLocalizer<T>
                 .AddDataAnnotationsLocalization();
 
+            #region In-memory Session
+            // Adds a default in-memory implementation of IDistributedCache.
+            // 添加 Microsoft.AspNetCore.Session 包
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.CookieHttpOnly = true;
+            });
+            #endregion
+
             #region File Providers
 
             var physicalProvider = _hostingEnvironment.ContentRootFileProvider;
@@ -120,7 +132,7 @@ namespace BasicSite
 
             app.UseStaticFiles();
 
-            app.UseStaticFiles();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

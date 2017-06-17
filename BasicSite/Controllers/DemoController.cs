@@ -48,6 +48,18 @@ namespace BasicSite.Controllers
             var contents = _fileProvider.GetDirectoryContents(""); // 应用程序的根目录
             return View(contents);
         }
+
+        public IActionResult MyTempData()
+        {
+            TempData["a"] = "aaa";
+            TempData["now"] = DateTime.Now.ToString();
+            return View();
+        }
+
+        public ActionResult ToAnother()
+        {
+            return View();
+        }
     }
 
 }
