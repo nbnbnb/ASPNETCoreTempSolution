@@ -1,11 +1,14 @@
 ﻿@{
     ViewData["Title"] = "Temp";
+
+    TempData["king"] = "kkking";
+
 }
 
 <h3>Temp</h3>
 <pre>
-当前 Controller 中定义 TempData 的值
-如果在当前的 View 中读取了 TempData，则跳转之后的 View 中就无法读取到这个值了
+对于在 TempData 中定义的值，只能被读取一次
+读取完后此键位的值就被清空
 </pre>
 <p>
     @Html.ActionLink("ToAnother","ToAnother")
